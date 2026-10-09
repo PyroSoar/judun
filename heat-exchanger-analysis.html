@@ -39,7 +39,8 @@
     padding:18px 20px;margin-bottom:16px}
   .card h2{margin:0 0 14px;font-size:15px;font-weight:620;display:flex;align-items:center;gap:8px}
   .card h2 .tag{font-size:11.5px;font-weight:500;color:var(--txt3);background:var(--line2);
-    border-radius:20px;padding:2px 9px}
+    border-radius:20px;padding:2px 9px;flex:0 0 auto}
+  .card h2 button{height:28px;font-size:12.5px;padding:0 11px;font-weight:500}
   .drop{border:1.5px dashed #c3ccda;border-radius:12px;background:#fbfcfe;padding:30px;text-align:center;
     transition:.15s;cursor:pointer}
   .drop:hover,.drop.over{border-color:var(--brand);background:var(--brand-soft)}
@@ -50,7 +51,9 @@
   .g4{grid-template-columns:repeat(4,1fr)}
   .g3{grid-template-columns:repeat(3,1fr)}
   .g2{grid-template-columns:repeat(2,1fr)}
-  @media(max-width:900px){.g4,.g3,.g2{grid-template-columns:repeat(2,1fr)}}
+  .g5{grid-template-columns:repeat(5,1fr)}
+  @media(max-width:1100px){.g5{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:900px){.g4,.g3,.g2,.g5{grid-template-columns:repeat(2,1fr)}}
   .field{display:flex;flex-direction:column;gap:5px}
   .field label{font-size:12.5px;color:var(--txt2);font-weight:550}
   .field .hint{font-size:11.5px;color:var(--txt3);font-weight:400}
@@ -76,11 +79,18 @@
   .rng{width:132px;height:20px;padding:0;border:none;background:none;accent-color:var(--brand);cursor:pointer}
   .rng:focus{box-shadow:none}
   #fsBox:fullscreen,#fsBox:-webkit-full-screen{background:#fff;padding:12px 14px;height:100vh;box-sizing:border-box;overflow:auto}
-  #fsBox:fullscreen #chEff,#fsBox:-webkit-full-screen #chEff{height:calc(100vh - 118px)!important}
+  #fsBox:fullscreen #chEff,#fsBox:-webkit-full-screen #chEff{height:calc(100vh - 112px)!important}
+  #fsBox:fullscreen #hEffLabel,#fsBox:-webkit-full-screen #hEffLabel,
+  #fsBox:fullscreen #hEff,#fsBox:-webkit-full-screen #hEff,
+  #fsBox:fullscreen #hEffVal,#fsBox:-webkit-full-screen #hEffVal{display:none}
   .kpi{background:#fafbfd;border:1px solid var(--line2);border-radius:10px;padding:12px 14px}
   .kpi .k{font-size:11.5px;color:var(--txt3);margin-bottom:3px}
   .kpi .v{font-size:19px;font-weight:650;letter-spacing:-.2px}
   .kpi .u{font-size:12px;color:var(--txt3);font-weight:500;margin-left:2px}
+  .sgrp{margin-bottom:16px}
+  .sgrp:last-child{margin-bottom:0}
+  .sgt{font-size:12.5px;font-weight:650;color:var(--txt2);margin-bottom:8px;
+    border-left:3px solid var(--brand);padding-left:8px;letter-spacing:.2px}
   .chart{width:100%;height:340px}
   .chart.sm{height:200px}
   table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
@@ -91,6 +101,22 @@
   tbody tr:hover{background:#f2f6ff}
   tr.base{background:#fff7e6!important}
   tr.end{background:#eaf6ff!important}
+  /* 行号列：默认显示数字，悬停该行时切换为「0时刻 / 终点」按钮 */
+  th.idx,td.idx{width:104px;min-width:104px}
+  td.idx{text-align:center}
+  /* 行号 badge：圆角填充 + 白字 */
+  td.idx .num{display:inline-block;min-width:36px;padding:1px 9px;border-radius:20px;
+    background:#64748b;color:#fff;font-size:11.5px;font-weight:600;line-height:18px;
+    font-variant-numeric:tabular-nums}
+  tr.base td.idx .num{background:#d97706}
+  tr.end td.idx .num{background:#0284c7}
+  td.idx .idxbtns{display:none;gap:4px;justify-content:center}
+  td.idx .idxbtns button{height:24px;padding:0 6px;font-size:11.5px;border-radius:6px}
+  tbody tr:hover td.idx .num{display:none}
+  tbody tr:hover td.idx .idxbtns{display:inline-flex}
+  /* 列映射表 */
+  table#mapTbl td.f{background:#f7f9fc;font-weight:600;color:var(--txt2);white-space:nowrap}
+  table#mapTbl td select{height:30px;font-size:12.5px}
   .tblbox{max-height:420px;overflow:auto;border:1px solid var(--line);border-radius:9px}
   .pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:20px;border:1px solid}
   .pill.ok{color:var(--green);border-color:#bbf7d0;background:#f0fdf4}
@@ -120,6 +146,9 @@
   table.rtb th,table.rtb td{border:1px solid #cbd5e1;padding:3px 5px;text-align:center}
   table.rtb th{background:#eef2f7;font-weight:600}
   table.rtb td.k{background:#f7f9fc;font-weight:600;text-align:left}
+  .rsub{font-size:11px;font-weight:700;color:#1e40af;margin:10px 0 5px;
+    border-left:3px solid #93c5fd;padding-left:6px}
+  .rsub:first-child{margin-top:0}
   .rkpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
   .rkpi{border:1px solid #cbd5e1;border-radius:5px;padding:6px 8px}
   .rkpi .k{font-size:9px;color:#666;line-height:1.3}
@@ -180,7 +209,21 @@
     </div>
     <details id="mapBox">
       <summary>列映射（自动识别结果，可手动修正）</summary>
-      <div class="grid g3" id="mapGrid" style="margin-top:10px"></div>
+      <div style="margin-top:10px">
+        <div class="field" style="margin-bottom:10px">
+          <label>通用字段</label>
+        </div>
+        <div class="grid g3" id="mapCommon"></div>
+        <div class="field" style="margin:12px 0 6px">
+          <label>流股字段 <span class="hint">（列 = 冷 / 热流股，行 = 测点类型；选项均为 CSV 原始表头）</span></label>
+        </div>
+        <div class="tblbox" style="max-height:none">
+          <table id="mapTbl">
+            <thead><tr><th>字段</th><th>冷流股</th><th>热流股</th></tr></thead>
+            <tbody id="mapTblBody"></tbody>
+          </table>
+        </div>
+      </div>
       <div class="row" style="margin-top:10px"><button id="btnRemap" class="primary">应用列映射并重新解析</button></div>
     </details>
   </div>
@@ -220,7 +263,7 @@
       </div>
     </div>
 
-    <div class="grid g4">
+    <div class="grid g5">
       <div class="field">
         <label>热负荷 Q 取值</label>
         <select id="qSrc">
@@ -248,6 +291,16 @@
           <option value="win">基准行前后各 5 点均值</option>
         </select>
       </div>
+      <div class="field">
+        <label>曲线连接方式</label>
+        <select id="lineMode">
+          <option value="line">直线（折线）</option>
+          <option value="cubic">三次样条 · Catmull-Rom</option>
+          <option value="monotone">单调三次样条（无过冲）</option>
+          <option value="step">阶梯线</option>
+        </select>
+        <div class="hint">仅影响画图，全部为 ECharts 原生连接方式且均过数据点；统计与导出仍用原始计算值</div>
+      </div>
     </div>
 
     <details style="margin-top:12px">
@@ -272,33 +325,27 @@
 
   <!-- 4 图表 -->
   <div class="card hide" id="cardChart">
-    <h2>④ 换热效率与压降 <span class="tag" id="chartRange"></span></h2>
     <div id="fsBox">
+      <h2>④ 换热效率与压降 <span class="tag" id="chartRange"></span>
+        <span style="flex:1"></span>
+        <span class="bar-label" id="hEffLabel">高度</span>
+        <input type="range" id="hEff" class="rng" min="220" max="900" step="20" value="380">
+        <span class="bar-label num" id="hEffVal">380 px</span>
+        <button id="btnFull">全屏显示</button>
+      </h2>
       <div class="row" style="margin-bottom:8px">
         <span class="bar-label">X 轴</span>
         <div class="btnseg">
           <button id="xHour" class="on">运行时长 (h)</button>
           <button id="xTime">绝对时间</button>
         </div>
+        <span style="flex:1"></span>
         <span class="bar-label">压降纵轴</span>
         <div class="btnseg">
           <button id="dpAbs" class="on">绝对压降</button>
           <button id="dpRel">相对变化率 (%)</button>
           <button id="dpDelta">相对增量</button>
         </div>
-        <span class="bar-label">叠加</span>
-        <button id="btnTrend" class="on">线性趋势线</button>
-        <span class="bar-label">高度</span>
-        <input type="range" id="hEff" class="rng" min="220" max="900" step="20" value="380">
-        <span class="bar-label num" id="hEffVal">380 px</span>
-        <span style="flex:1"></span>
-        <button id="btnFull">全屏显示</button>
-      </div>
-      <div class="row" style="margin-bottom:8px">
-        <span class="bar-label">曲线</span>
-        <div class="btnseg" id="serToggles"></div>
-        <span style="flex:1"></span>
-        <span class="bar-label">滚轮 / 拖拽下方滑块可缩放；也可直接点击图例开关曲线</span>
       </div>
       <div id="chEff" class="chart" style="height:380px"></div>
     </div>
@@ -307,13 +354,13 @@
   <!-- 5 统计 -->
   <div class="card hide" id="cardStat">
     <h2>⑤ 结果统计</h2>
-    <div class="grid g4" id="statKpi"></div>
-    <div class="note" id="statNote" style="margin-top:12px"></div>
+    <div id="statGroups"></div>
+    <div class="note" id="statNote" style="margin-top:14px"></div>
   </div>
 
   <!-- 6 数据表 -->
   <div class="card hide" id="cardTable">
-    <h2>⑥ 逐点数据 <span class="tag">点击行可设为 0 时刻 / 终点</span></h2>
+    <h2>⑥ 逐点数据 <span class="tag">悬停任意行，行号处可设为 0 时刻 / 终点</span></h2>
     <div class="row" style="margin-bottom:10px">
       <span class="bar-label">显示</span>
       <div class="btnseg">
@@ -377,7 +424,7 @@ const S = {
   header: [], rows: [],            // rows: {i, t, Tc_in, Tc_out, Th_in, Th_out, Gc, Gh, dPc, dPh}
   valid: [], res: null,
   baseIdx: null, endIdx: null,
-  xMode: 'hour', dpMode: 'abs', trend: true,
+  xMode: 'hour', dpMode: 'abs', trend: true, lineMode: 'line',
   pickMode: null, zoom: null, sel: null, curId: null,
   page: 1, pageSize: 100, tblAll: false
 };
@@ -451,6 +498,16 @@ function linreg(xs, ys) {
     ss += (ys[i] - sy / n) ** 2; sr += (ys[i] - (k * xs[i] + b)) ** 2;
   }
   return { k, b, r2: ss > 0 ? 1 - sr / ss : NaN, n };
+}
+
+/* ---------- 曲线连接方式（全部走 ECharts 原生） ---------- */
+// 把当前连接方式写进 series 配置
+function shapeOf(s) {
+  const m = S.lineMode;
+  if (m === 'cubic') { s.smooth = true; s.smoothMonotone = undefined; }
+  else if (m === 'monotone') { s.smooth = true; s.smoothMonotone = 'x'; }
+  else if (m === 'step') { s.step = 'middle'; }
+  return s;
 }
 
 /* ==================== 本地存档（IndexedDB） ==================== */
@@ -565,6 +622,14 @@ const FIELDS = [
   { key: 'dPc', label: '冷水供回水压差', need: [['冷水', '压差']] },
   { key: 'dPh', label: '热水供回水压差', need: [['热水', '压差']] }
 ];
+/* 流股映射表：行 = 测点类型，列 = 冷 / 热流股（键对应 FIELDS.key） */
+const MAP_ROWS = [
+  { label: '进口温度', c: 'Tc_in', h: 'Th_in' },
+  { label: '出口温度', c: 'Tc_out', h: 'Th_out' },
+  { label: '瞬时流量', c: 'Gc', h: 'Gh' },
+  { label: '进出压差', c: 'dPc', h: 'dPh' }
+];
+const MAP_COMMON = FIELDS.filter(f => !MAP_ROWS.some(r => r.c === f.key || r.h === f.key));
 function autoMap(header) {
   const map = {}, used = new Set();
   FIELDS.forEach(f => {
@@ -612,14 +677,28 @@ function ingest(name, buf, skipSave) {
   });
 }
 function buildMapUI() {
-  const g = $('mapGrid'); g.innerHTML = '';
-  const opts = S.header.map((h, i) => '<option value="' + i + '">' + esc(h) + '</option>').join('');
-  FIELDS.forEach(f => {
+  const opts = '<option value="-1">（不使用）</option>' +
+    S.header.map((h, i) => '<option value="' + i + '">' + esc(h) + '</option>').join('');
+  const mk = (k, lb) => '<select data-k="' + k + '" title="' + esc(lb) + '">' + opts + '</select>';
+  const labelOf = k => (FIELDS.find(f => f.key === k) || { label: k }).label;
+
+  // 通用字段（时间列等）
+  const g = $('mapCommon'); g.innerHTML = '';
+  MAP_COMMON.forEach(f => {
     const d = document.createElement('div'); d.className = 'field';
-    d.innerHTML = '<label>' + f.label + '</label><select data-k="' + f.key + '">' +
-      '<option value="-1">（不使用）</option>' + opts + '</select>';
+    d.innerHTML = '<label>' + f.label + '</label>' + mk(f.key, f.label);
     g.appendChild(d);
-    d.querySelector('select').value = (S.map[f.key] === undefined ? -1 : S.map[f.key]);
+  });
+
+  // 流股字段：行 = 测点类型，列 = 冷 / 热流股
+  $('mapTblBody').innerHTML = MAP_ROWS.map(r =>
+    '<tr><td class="f">' + r.label + '</td>' +
+    '<td>' + mk(r.c, '冷流股 · ' + r.label + '（' + labelOf(r.c) + '）') + '</td>' +
+    '<td>' + mk(r.h, '热流股 · ' + r.label + '（' + labelOf(r.h) + '）') + '</td></tr>').join('');
+
+  // 回填自动识别结果
+  document.querySelectorAll('#mapCommon select, #mapTblBody select').forEach(s => {
+    s.value = (S.map[s.dataset.k] === undefined ? -1 : S.map[s.dataset.k]);
   });
 }
 function applyParse() {
@@ -805,12 +884,16 @@ function run() {
 /* ==================== 图表 ==================== */
 function baseX() { return S.xMode === 'hour' ? 'value' : 'time'; }
 function xOf(p) { return S.xMode === 'hour' ? p.h : p.t.getTime(); }
+// X 轴严格贴齐首尾数据点（如 9.02 h），不做 10 h 之类的整数取整；
+// dataZoom 生效时其 determinedMin/Max 优先级更高，缩放不受影响
 function axisCommon() {
   return S.xMode === 'hour'
     ? { type: 'value', name: '运行时长 (h)', nameLocation: 'middle', nameGap: 26,
+        min: 'dataMin', max: 'dataMax',
         axisLabel: { formatter: v => (Math.round(v * 100) / 100) + ' h', color: '#5b6779' },
         splitLine: { lineStyle: { color: '#eef2f7' } } }
     : { type: 'time', name: '时间', nameLocation: 'middle', nameGap: 26,
+        min: 'dataMin', max: 'dataMax',
         axisLabel: { color: '#5b6779' }, splitLine: { lineStyle: { color: '#eef2f7' } } };
 }
 function dpTip(p) {
@@ -833,6 +916,17 @@ function tipFormatter(ps) {
   return '<div style="font-size:12px;line-height:1.7">' +
     rows.map(r => '<div><span style="color:#8b95a5">' + r[0] + '：</span>' + r[1] + '</div>').join('') + '</div>';
 }
+// X 轴最小缩放跨度：保证窗口内至少还能看到 4 个点（3 个间隔，取间隔中位数）
+function minSpanX() {
+  const P = S.res && S.res.P;
+  if (!P || P.length < 2) return null;
+  const xs = P.map(xOf);
+  const gaps = [];
+  for (let i = 1; i < xs.length; i++) { const g = xs[i] - xs[i - 1]; if (g > 0 && isFinite(g)) gaps.push(g); }
+  if (!gaps.length) return null;
+  gaps.sort((a, b) => a - b);
+  return gaps[gaps.length >> 1] * 3;
+}
 function drawChart() {
   const P = S.res.P, w = S.res.w, m = S.dpMode;
   chEff = chEff || echarts.init($('chEff'));
@@ -841,57 +935,59 @@ function drawChart() {
   else if (m === 'delta') { dpc = P.map(p => p.dPcDel); dph = P.map(p => p.dPhDel); dpName = '压降增量 · 相对 0 时刻'; }
   else { dpc = P.map(p => p.dPcS); dph = P.map(p => p.dPhS); dpName = '压降（原单位）'; }
 
+  const xs = P.map(xOf);
+
   const series = [];
-  if (w > 1) series.push({
+  if (w > 1) series.push(shapeOf({
     name: '换热效率(原始)', type: 'line', yAxisIndex: 0, showSymbol: false, sampling: 'lttb',
-    data: P.map(p => [xOf(p), p.effRaw]),
+    data: P.map((p, k) => [xs[k], p.effRaw]),
     lineStyle: { width: 1, color: '#a9c4f5' }, itemStyle: { color: '#a9c4f5' }, z: 2
-  });
-  series.push({
+  }));
+  series.push(shapeOf({
     name: '换热效率', type: 'line', yAxisIndex: 0, showSymbol: false, sampling: 'lttb',
-    data: P.map(p => [xOf(p), p.eff]),
+    data: P.map((p, k) => [xs[k], p.eff]),
     lineStyle: { width: 2, color: '#2563eb' }, itemStyle: { color: '#2563eb' }, z: 5,
     areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(37,99,235,.14)' }, { offset: 1, color: 'rgba(37,99,235,.01)' }]) },
     markLine: {
       silent: true, symbol: 'none',
       data: [{ yAxis: 100, label: { formatter: '0 时刻基准 100%', fontSize: 11, color: '#8b95a5', position: 'insideEndTop' }, lineStyle: { color: '#94a3b8', type: 'dashed' } }]
     }
-  });
+  }));
   if (S.trend) {
     const lr = linreg(P.map(p => p.h), P.map(p => p.eff));
     if (lr) {
       const h0 = P[0].h, h1 = P[P.length - 1].h;
       series.push({
-        name: '线性趋势', type: 'line', yAxisIndex: 0, showSymbol: false, z: 4,
+        name: '换热效率线性趋势', type: 'line', yAxisIndex: 0, showSymbol: false, z: 4,
         data: S.xMode === 'hour'
           ? [[h0, lr.k * h0 + lr.b], [h1, lr.k * h1 + lr.b]]
           : [[P[0].t.getTime(), lr.k * h0 + lr.b], [P[P.length - 1].t.getTime(), lr.k * h1 + lr.b]],
-        lineStyle: { width: 1.5, color: '#16a34a', type: 'dashed' }, itemStyle: { color: '#16a34a' }
+        lineStyle: { width: 1.6, color: '#2563eb', type: 'dashed' }, itemStyle: { color: '#2563eb' }
       });
       S.res.lr = lr;
     }
   }
-  series.push({
+  series.push(shapeOf({
     name: '冷侧压降', type: 'line', yAxisIndex: 1, showSymbol: false, sampling: 'lttb',
-    data: P.map((p, k) => [xOf(p), dpc[k]]),
+    data: P.map((p, k) => [xs[k], dpc[k]]),
     lineStyle: { width: 1.8, color: '#0891b2' }, itemStyle: { color: '#0891b2' }, z: 3
-  });
-  series.push({
+  }));
+  series.push(shapeOf({
     name: '热侧压降', type: 'line', yAxisIndex: 1, showSymbol: false, sampling: 'lttb',
-    data: P.map((p, k) => [xOf(p), dph[k]]),
+    data: P.map((p, k) => [xs[k], dph[k]]),
     lineStyle: { width: 1.8, color: '#ea580c' }, itemStyle: { color: '#ea580c' }, z: 3
-  });
+  }));
 
   chEff.setOption({
     animation: false,
-    grid: { left: 62, right: 68, top: 30, bottom: 74 },
+    grid: { left: 62, right: 68, top: 58, bottom: 74 },
     tooltip: {
       trigger: 'axis', axisPointer: { type: 'cross', label: { show: false } }, formatter: tipFormatter,
       backgroundColor: 'rgba(255,255,255,.97)', borderColor: '#e3e8ef', textStyle: { color: '#1f2937' },
       extraCssText: 'box-shadow:0 4px 16px rgba(16,24,40,.12);padding:9px 11px'
     },
     legend: {
-      top: 0, right: 4, itemWidth: 18, itemHeight: 3,
+      top: 0, left: 'center', itemWidth: 18, itemHeight: 3, itemGap: 16,
       textStyle: { color: '#5b6779', fontSize: 12 }, selected: S.sel || undefined
     },
     xAxis: axisCommon(),
@@ -910,8 +1006,8 @@ function drawChart() {
       }
     ],
     dataZoom: [
-      { type: 'inside', zoomOnMouseWheel: true, moveOnMouseMove: true },
-      { type: 'slider', height: 22, bottom: 16, borderColor: '#e3e8ef', fillerColor: 'rgba(37,99,235,.10)', handleStyle: { color: '#2563eb' }, textStyle: { color: '#8b95a5', fontSize: 11 } }
+      { type: 'inside', zoomOnMouseWheel: true, moveOnMouseMove: true, minValueSpan: minSpanX() },
+      { type: 'slider', height: 22, bottom: 16, borderColor: '#e3e8ef', fillerColor: 'rgba(37,99,235,.10)', handleStyle: { color: '#2563eb' }, textStyle: { color: '#8b95a5', fontSize: 11 }, minValueSpan: minSpanX() }
     ],
     series
   }, true);
@@ -920,30 +1016,9 @@ function drawChart() {
   bindPick(chEff);
   if (!chEff.__lg) {
     chEff.__lg = true;
-    chEff.on('legendselectchanged', p => { S.sel = Object.assign({}, p.selected); syncSerToggles(); });
+    chEff.on('legendselectchanged', p => { S.sel = Object.assign({}, p.selected); });
   }
-  buildSerToggles(series.map(s => s.name));
   if (S.zoom) chEff.dispatchAction({ type: 'dataZoom', start: S.zoom[0], end: S.zoom[1] });
-}
-function buildSerToggles(names) {
-  const box = $('serToggles');
-  if (!box) return;
-  box.innerHTML = '';
-  names.forEach(n => {
-    const b = document.createElement('button');
-    b.textContent = n;
-    b.dataset.n = n;
-    b.classList.toggle('on', !S.sel || S.sel[n] !== false);
-    b.onclick = () => chEff.dispatchAction({ type: 'legendToggleSelect', name: n });
-    box.appendChild(b);
-  });
-}
-function syncSerToggles() {
-  const box = $('serToggles');
-  if (!box) return;
-  Array.prototype.forEach.call(box.children, b => {
-    b.classList.toggle('on', !S.sel || S.sel[b.dataset.n] !== false);
-  });
 }
 function bindZoom(a) {
   if (a.__zb) return;
@@ -983,38 +1058,84 @@ function bindPick(ch) {
 
 /* ==================== 统计 ==================== */
 const pcChg = (a, b) => (isFinite(a) && a !== 0 && isFinite(b)) ? (b - a) / a * 100 : NaN;
+const sgn = v => (isFinite(v) && v > 0 ? '+' : '');
 function statItems() {
   const P = S.res.P, lr = S.res.lr || linreg(P.map(p => p.h), P.map(p => p.eff));
   const last = P[P.length - 1], first = P[0];
   const effs = P.map(p => p.eff).filter(isFinite);
   const durH = last.h - first.h;
-  const dPcF = P[0].dPcS, dPcL = last.dPcS, dPhF = P[0].dPhS, dPhL = last.dPhS;
+  const mean = a => { let s = 0; for (let i = 0; i < a.length; i++) s += a[i]; return s / a.length; };
+  const gaps = [];
+  for (let i = 1; i < P.length; i++) { const g = (P[i].t - P[i - 1].t) / 60000; if (g > 0 && isFinite(g)) gaps.push(g); }
+  gaps.sort((a, b) => a - b);
+  const sampMin = gaps.length ? gaps[gaps.length >> 1] : NaN;
+
+  const dPcF = first.dPcS, dPcL = last.dPcS, dPhF = first.dPhS, dPhL = last.dPhS;
+  const cCd = dPcL - dPcF, cHd = dPhL - dPhF;
   const cC = pcChg(dPcF, dPcL), cH = pcChg(dPhF, dPhL);
-  const items = [
-    ['结束时刻换热效率', fmt(last.eff, 2), '%', last.eff < 100 ? 'var(--red)' : 'var(--green)'],
-    ['区间最低效率', fmt(Math.min.apply(null, effs), 2), '%', ''],
-    ['效率变化速率', lr ? fmt(lr.k * 24, 3) : '—', '%/天', lr && lr.k < 0 ? 'var(--red)' : ''],
-    ['拟合优度 R²', lr ? fmt(lr.r2, 3) : '—', '', ''],
-    ['冷侧压降变化', fmt(cC, 2), '%', cC > 0 ? 'var(--red)' : 'var(--green)'],
-    ['热侧压降变化', fmt(cH, 2), '%', cH > 0 ? 'var(--red)' : 'var(--green)'],
-    ['分析时长', fmt(durH, 1), 'h', ''],
-    ['有效点数', P.length, '点', '']
+  const kaChg = pcChg(S.res.ka0, last.kaS);
+  const d10 = (lr && lr.k < 0) ? -10 / (lr.k * 24) : NaN;
+  const B = 'var(--red)', G = 'var(--green)';
+
+  const groups = [
+    {
+      title: '数据概况', items: [
+        ['分析时长', fmt(durH, 1), 'h', ''],
+        ['有效工况点数', P.length, '点', ''],
+        ['采样间隔（中位）', fmt(sampMin, sampMin < 10 ? 2 : 1), 'min', ''],
+        ['基准 K·A₀', fmt(S.res.ka0, 4), '', '']
+      ]
+    },
+    {
+      title: '换热效率　η = (K·A)t / (K·A)₀ × 100%', items: [
+        ['结束时刻效率', fmt(last.eff, 2), '%', last.eff < 100 ? B : G],
+        ['区间最低效率', fmt(Math.min.apply(null, effs), 2), '%', ''],
+        ['区间最高效率', fmt(Math.max.apply(null, effs), 2), '%', ''],
+        ['区间平均效率', fmt(mean(effs), 2), '%', ''],
+        ['K·A 累计变化', sgn(kaChg) + fmt(kaChg, 2), '%', kaChg < 0 ? B : G],
+        ['效率变化速率', lr ? fmt(lr.k * 24, 3) : '—', '%/天', lr && lr.k < 0 ? B : ''],
+        ['拟合优度 R²', lr ? fmt(lr.r2, 3) : '—', '', ''],
+        ['效率降 10% 预计', isFinite(d10) ? fmt(d10, 1) : '—', isFinite(d10) ? '天' : '', '']
+      ]
+    },
+    {
+      title: '压降变化　（初值 = 0 时刻基准）', items: [
+        ['冷侧压降 · 初值', fmt(dPcF, 3), '', ''],
+        ['冷侧压降 · 终值', fmt(dPcL, 3), '', ''],
+        ['冷侧变化量', sgn(cCd) + fmt(cCd, 3), '', cCd > 0 ? B : G],
+        ['冷侧变化率', sgn(cC) + fmt(cC, 2), '%', cC > 0 ? B : G],
+        ['热侧压降 · 初值', fmt(dPhF, 3), '', ''],
+        ['热侧压降 · 终值', fmt(dPhL, 3), '', ''],
+        ['热侧变化量', sgn(cHd) + fmt(cHd, 3), '', cHd > 0 ? B : G],
+        ['热侧变化率', sgn(cH) + fmt(cH, 2), '%', cH > 0 ? B : G]
+      ]
+    }
   ];
-  const note = '基准（0 时刻）：第 ' + (S.baseIdx + 1) + ' 行 · ' + fmtT(S.rows[S.baseIdx].t) +
-    '，K·A₀ = ' + fmt(S.res.ka0, 4) + '（相对单位）。' +
-    ' 至终点 K·A = ' + fmt(last.kaS, 4) + '，累计变化 <b>' + fmt(pcChg(S.res.ka0, last.kaS), 2) + ' %</b>。' +
-    ' 冷侧压降 ' + fmt(dPcF, 3) + ' → ' + fmt(dPcL, 3) +
-    '，热侧压降 ' + fmt(dPhF, 3) + ' → ' + fmt(dPhL, 3) + '。' +
-    (lr ? ' 线性趋势斜率 ' + fmt(lr.k * 24, 3) + ' %/天（R² = ' + fmt(lr.r2, 3) + '），' +
-      '按此速率效率下降 10% 约需 ' + (lr.k < 0 ? fmt(-10 / (lr.k * 24), 1) : '∞') + ' 天。' : '');
-  return { items, note, lr, dPcF, dPcL, dPhF, dPhL };
+
+  const note = '<b>基准</b>（0 时刻）：第 ' + (S.baseIdx + 1) + ' 行 · ' + fmtT(S.rows[S.baseIdx].t) +
+    '，K·A₀ = ' + fmt(S.res.ka0, 4) + '。' +
+    '<br><b>数据概况</b>：有效工况 ' + P.length + ' 点，区间 ' + fmtT(P[0].t) + ' → ' + fmtT(last.t) +
+    '，时长 ' + fmt(durH, 1) + ' h（约 ' + fmt(durH / 24, 2) + ' 天），采样间隔中位数 ' +
+    fmt(sampMin, sampMin < 10 ? 2 : 1) + ' min。' +
+    '<br><b>换热效率</b>：终点 K·A = ' + fmt(last.kaS, 4) + '，累计变化 <b>' + sgn(kaChg) + fmt(kaChg, 2) + ' %</b>；' +
+    '区间内最低 ' + fmt(Math.min.apply(null, effs), 2) + '%、最高 ' + fmt(Math.max.apply(null, effs), 2) +
+    '%、平均 ' + fmt(mean(effs), 2) + '%。' +
+    (lr ? ' 线性趋势 ' + fmt(lr.k * 24, 3) + ' %/天（R² = ' + fmt(lr.r2, 3) + '）' +
+      (isFinite(d10) ? '，按此速率效率下降 10% 约需 ' + fmt(d10, 1) + ' 天' : '，趋势未下降') + '。' : '') +
+    '<br><b>压降变化</b>：冷侧 ' + fmt(dPcF, 3) + ' → ' + fmt(dPcL, 3) +
+    '（' + sgn(cC) + fmt(cC, 2) + '%），热侧 ' + fmt(dPhF, 3) + ' → ' + fmt(dPhL, 3) +
+    '（' + sgn(cH) + fmt(cH, 2) + '%）。';
+  return { groups, note, lr, dPcF, dPcL, dPhF, dPhL };
 }
 function drawStat() {
   const st = statItems();
-  $('statKpi').innerHTML = st.items.map(x => '<div class="kpi"><div class="k">' + x[0] + '</div><div class="v" style="color:' +
-    (x[3] || 'var(--txt)') + '">' + x[1] + '<span class="u">' + x[2] + '</span></div></div>').join('');
+  $('statGroups').innerHTML = st.groups.map((g, i) =>
+    '<div class="sgrp"><div class="sgt">' + (i + 1) + '. ' + esc(g.title) + '</div><div class="grid g4">' +
+    g.items.map(x => '<div class="kpi"><div class="k">' + x[0] + '</div><div class="v" style="color:' +
+      (x[3] || 'var(--txt)') + '">' + x[1] + (x[2] ? '<span class="u">' + x[2] + '</span>' : '') +
+      '</div></div>').join('') + '</div></div>').join('');
   $('statNote').innerHTML = st.note +
-    '<br>注：效率下降代表传热能力衰减（结垢/污堵）；压降同步上升通常指示流道结垢或堵塞，两者结合可判断阻垢剂效果。';
+    '<br><span style="color:var(--txt3)">注：效率下降代表传热能力衰减（结垢 / 污堵）；压降同步上升通常指示流道结垢或堵塞，两者结合可判断阻垢剂效果。</span>';
 }
 
 /* ==================== 数据表 ==================== */
@@ -1031,14 +1152,16 @@ function drawTable() {
   const tot = Math.max(1, Math.ceil(idx.length / S.pageSize));
   if (S.page > tot) S.page = tot;
   const st = (S.page - 1) * S.pageSize, sl = idx.slice(st, st + S.pageSize);
-  const cols = ['行号', '时间', '时长h', 'T_h,in', 'T_h,out', 'T_c,in', 'T_c,out', 'G_h', 'G_c', 'Δt_m', 'Q', 'K·A', '效率%', 'ΔP_c', 'ΔP_h', '操作'];
+  const cols = ['行号', '时间', '时长h', 'T_h,in', 'T_h,out', 'T_c,in', 'T_c,out', 'G_h', 'G_c', 'Δt_m', 'Q', 'K·A', '效率%', 'ΔP_c', 'ΔP_h'];
   $('tbl').querySelector('thead').innerHTML = '<tr>' + cols.map((c, i) =>
-    '<th class="' + (i < 2 ? 'l' : '') + '">' + c + '</th>').join('') + '</tr>';
+    '<th class="' + (i === 0 ? 'idx' : '') + '">' + c + '</th>').join('') + '</tr>';
   $('tbl').querySelector('tbody').innerHTML = sl.map(i => {
     const r = S.rows[i], p = byI.get(i);
     const cls = i === S.baseIdx ? 'base' : (i === S.endIdx ? 'end' : '');
     return '<tr class="' + cls + '">' +
-      '<td class="l">' + (i + 1) + '</td>' +
+      '<td class="idx"><span class="num">' + (i + 1) + '</span>' +
+      '<span class="idxbtns"><button data-b="' + i + '">0时刻</button>' +
+      '<button data-e="' + i + '">终点</button></span></td>' +
       '<td class="l">' + fmtT(r.t) + '</td>' +
       '<td>' + (p ? fmt(p.h, 2) : '—') + '</td>' +
       '<td>' + fmt(r.Th_in) + '</td><td>' + fmt(r.Th_out) + '</td>' +
@@ -1048,10 +1171,8 @@ function drawTable() {
       '<td>' + (p ? fmt(p.Q, 4) : '—') + '</td>' +
       '<td>' + (p ? fmt(p.kaS, 4) : '—') + '</td>' +
       '<td><b>' + (p ? fmt(p.eff, 2) : '—') + '</b></td>' +
-      '<td>' + fmt(r.dPc, 3) + '</td><td>' + fmt(r.dPh, 3) + '</td>' +
-      '<td class="l"><button data-b="' + i + '" style="height:24px;padding:0 7px;font-size:11.5px">0时刻</button> ' +
-      '<button data-e="' + i + '" style="height:24px;padding:0 7px;font-size:11.5px">终点</button></td></tr>';
-  }).join('') || '<tr><td colspan="16" style="text-align:center;color:#8b95a5;padding:20px">无数据</td></tr>';
+      '<td>' + fmt(r.dPc, 3) + '</td><td>' + fmt(r.dPh, 3) + '</td></tr>';
+  }).join('') || '<tr><td colspan="15" style="text-align:center;color:#8b95a5;padding:20px">无数据</td></tr>';
   $('tbl').querySelectorAll('button[data-b]').forEach(b => b.onclick = () => { S.baseIdx = +b.dataset.b; syncPickInputs(); run(); });
   $('tbl').querySelectorAll('button[data-e]').forEach(b => b.onclick = () => { S.endIdx = +b.dataset.e; syncPickInputs(); run(); });
   $('pgNum').value = S.page; $('pgTot').textContent = '/ ' + tot + '（共 ' + idx.length + ' 行）';
@@ -1071,7 +1192,7 @@ function exportCSV() {
   const blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = '换热效率分析结果_' + fmtT(P[0].t).replace(/[\/: ]/g, '-') + '.csv';
+  a.download = 'heat_exchanger_result_' + fmtT(P[0].t).replace(/[\/: ]/g, '-') + '.csv';
   a.click(); URL.revokeObjectURL(a.href);
 }
 
@@ -1079,6 +1200,10 @@ function exportCSV() {
 function dpModeLabel() {
   return S.dpMode === 'abs' ? '绝对压降（原单位）'
     : (S.dpMode === 'rel' ? '相对 0 时刻变化率 (%)' : '相对 0 时刻增量');
+}
+function lineModeLabel() {
+  return ({ line: '直线（折线）', cubic: '三次样条 · Catmull-Rom', monotone: '单调三次样条（无过冲）',
+    step: '阶梯线' })[S.lineMode] || '直线（折线）';
 }
 function stamp() {
   const d = new Date();
@@ -1102,6 +1227,7 @@ function settingsRows() {
     ['基准取值方式', bm],
     ['有效工况阈值', '流量 > ' + $('minFlow').value + '，温差 > ' + $('minDT').value + ' °C，Δt_m > ' + $('minLMTD').value + ' °C'],
     ['X 轴', S.xMode === 'hour' ? '运行时长 (h)' : '绝对时间'],
+    ['曲线连接方式', lineModeLabel()],
     ['压降纵轴', dpModeLabel()]
   ];
   return '<table class="rtb">' + rows.map(r => '<tr><td class="k" style="width:158px">' + r[0] +
@@ -1125,10 +1251,14 @@ function buildReport() {
 
   page('<h3>换热性能分析报告</h3><div class="rmeta">' + meta + '</div>' +
     '<div class="rsec"><div class="rt">一、分析设置</div>' + settingsRows() + '</div>' +
-    '<div class="rsec"><div class="rt">二、结果统计</div><div class="rkpis">' +
-    st.items.map(x => '<div class="rkpi"><div class="k">' + x[0] + '</div><div class="v">' + x[1] +
-      ' <span style="font-size:10px;font-weight:500">' + x[2] + '</span></div></div>').join('') +
-    '</div></div>' +
+    '<div class="rsec"><div class="rt">二、结果统计</div>' +
+    st.groups.map((g, i) => '<div class="rsub">' + (i + 1) + '. ' + esc(g.title) + '</div><div class="rkpis">' +
+      g.items.map(x => '<div class="rkpi"><div class="k">' + x[0] + '</div><div class="v">' + x[1] +
+      (x[2] ? ' <span style="font-size:10px;font-weight:500">' + x[2] + '</span>' : '') +
+      '</div></div>').join('') + '</div>').join('') +
+    '</div>');
+
+  page('<h3>曲线图与结论</h3><div class="rmeta">' + meta + '</div>' +
     '<div class="rsec"><div class="rt">三、换热效率与压降　η = (K·A)t / (K·A)₀ × 100%　|　压降纵轴：' + dpModeLabel() + '</div>' +
     '<img class="rimg" src="' + img(chEff) + '"></div>' +
     '<div class="rsec"><div class="rt">四、结论摘要</div><div class="rnote">' + st.note +
@@ -1172,7 +1302,7 @@ async function exportPDF() {
       pdf.addImage(im, 'JPEG', (pw - w) / 2, (ph - h) / 2, w, h);
       await new Promise(r => setTimeout(r, 0));
     }
-    pdf.save('换热性能分析报告_' + stamp() + '.pdf');
+    pdf.save('heat_exchanger_report_' + stamp() + '.pdf');
     msg.textContent = '已导出 ' + pages.length + ' 页 PDF';
   } catch (e) { msg.textContent = '导出失败：' + e.message; console.error(e); }
 }
@@ -1186,7 +1316,7 @@ function exportPNG() {
   if (!S.res) { alert('请先完成一次分析'); return; }
   const a = document.createElement('a');
   a.href = chEff.getDataURL({ type: 'png', pixelRatio: 3, backgroundColor: '#ffffff' });
-  a.download = '换热效率与压降_' + stamp() + '.png';
+  a.download = 'heat_exchanger_chart_' + stamp() + '.png';
   a.click();
   $('expMsg').textContent = '已导出 PNG（3 倍分辨率）';
 }
@@ -1227,7 +1357,6 @@ $('baseTime').onchange = function () { const d = new Date(this.value); if (!isNa
 $('endTime').onchange = function () { const d = new Date(this.value); if (!isNaN(d)) { S.endIdx = nearestIdx(d); syncPickInputs(); run(); } };
 $('btnApplyFilter').onclick = () => { recomputeValid(); renderOverview(); run(); };
 $('btnRun').onclick = () => { S.zoom = null; run(); };
-$('btnTrend').onclick = function () { S.trend = !S.trend; this.classList.toggle('on', S.trend); run(); };
 $('btnExport').onclick = exportCSV;
 $('btnCsv2').onclick = exportCSV;
 $('btnPdf').onclick = exportPDF;
@@ -1247,6 +1376,7 @@ $('btnFull').onclick = toggleFullscreen;
   }));
 $('flow').onchange = () => { recomputeValid(); renderOverview(); run(); };
 ['qSrc', 'smooth', 'baseMode'].forEach(id => $(id).onchange = () => run());
+$('lineMode').onchange = function () { S.lineMode = this.value; drawChart(); };
 $('xHour').onclick = function () { S.xMode = 'hour'; this.classList.add('on'); $('xTime').classList.remove('on'); S.zoom = null; run(); };
 $('xTime').onclick = function () { S.xMode = 'time'; this.classList.add('on'); $('xHour').classList.remove('on'); S.zoom = null; run(); };
 const dpBtns = [['dpAbs', 'abs'], ['dpRel', 'rel'], ['dpDelta', 'delta']];
